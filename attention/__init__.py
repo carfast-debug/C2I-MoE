@@ -1,0 +1,1 @@
+"""Gated cross-modal attention."""

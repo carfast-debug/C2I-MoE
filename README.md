@@ -1,10 +1,19 @@
-# C2I-MoE
+# 🧠 C2I-MoE
 
 This repository provides the structural and functional encoders, cross-modal
 contrastive alignment, interaction experts, query regulation, and the training
 and evaluation pipeline for C2I-MoE.
 
-## Installation
+## 🧩 Model overview
+
+![C2I-MoE model architecture](assets/framework.png)
+
+**Figure 1. Overview of C2I-MoE.** 3DINO and BrainGFM extract structural and
+functional features from T1 MRI and rs-fMRI, respectively. Cross-modal
+contrastive alignment and expert-aware fusion combine these representations
+for Parkinson's disease classification.
+
+## ⚙️ Installation
 
 Python 3.10 is recommended. Install a PyTorch build compatible with your GPU
 and CUDA driver, then install the remaining dependencies:
@@ -19,7 +28,7 @@ NumPy 1.26.4, SciPy 1.12.0, scikit-learn 1.7.2, and nibabel 5.1.0.
 The code can run on CPU, but full 3DINO fine-tuning is intended for a GPU
 with sufficient memory. Lower `--batch-size` when needed.
 
-## Data and pretrained models
+## 📦 Data and pretrained models
 
 Supply your own preprocessed paired inputs. No patient imaging, subject
 identifiers, cohort split files, or model weights are included in this repository.
@@ -43,7 +52,7 @@ fMRI/
   preprocessing, registration, fMRI denoising, or quality control.
 - Labels are `NC=0` and `PD=1`.
 
-### Pretrained weights
+### 📥 Pretrained weights
 
 Download the foundation-model checkpoints from the original authors:
 
@@ -72,7 +81,7 @@ Optional local Bio_ClinicalBERT assets can be specified with
 `C2IMOE_CLINICALBERT_DIR`; if unavailable, the BrainGFM initializer uses fallback
 embeddings. Encoder checkpoints overwrite the corresponding stored parameters.
 
-## Train
+## 🚀 Training
 
 Start training with explicit paths:
 
@@ -102,7 +111,7 @@ from the same subject remain in the same partition.
 To initialize fine-tuning from a complete C2I-MoE checkpoint, add
 `--init-checkpoint /path/to/trained_checkpoint.pth`.
 
-## Evaluate
+## 🧪 Evaluation
 
 Evaluate only the selected held-out partition using the split file from training:
 
@@ -132,7 +141,7 @@ Checkpoints are loaded strictly. `--allow-missing-contrast-heads` permits only
 missing training-only contrastive-head weights; missing
 encoder, expert, gate, classifier, or rotation-buffer weights still fail.
 
-## Code layout
+## 🗂️ Code layout
 
 ```text
 train.py                  command-line training entry
@@ -151,16 +160,17 @@ attention/                 gated and unified attention blocks
 utils/                     MLP, layer-wise learning-rate decay, query rotation
 tests/                     software checks with synthetic inputs
 third_party/               retained upstream license and attribution notes
+assets/                    model architecture figure used in this README
 ```
 
-## Attribution and licensing
+## 📚 Attribution and licensing
 
 Please cite the C2I-MoE BIBM 2026 paper when using this implementation, along
 with the original 3DINO, BrainGFM, I2MoE, and RollingQ works as appropriate.
 No repository-wide reuse license has been specified.
 Third-party terms remain applicable; see `third_party/NOTICE.md`.
 
-## Software checks
+## ✅ Software checks
 
 ```bash
 python -m pip install pytest
