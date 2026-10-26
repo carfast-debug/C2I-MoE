@@ -1,8 +1,5 @@
 # C2I-MoE
 
-Training and evaluation code for **C2I-MoE: Cross-modal Contrastive Interaction
-Mixture-of-Experts Network for Parkinson's Disease Diagnosis** (IEEE BIBM 2026).
-
 This repository provides the structural and functional encoders, cross-modal
 contrastive alignment, interaction experts, query regulation, and the training
 and evaluation pipeline for C2I-MoE.
@@ -46,11 +43,34 @@ fMRI/
   preprocessing, registration, fMRI denoising, or quality control.
 - Labels are `NC=0` and `PD=1`.
 
-Obtain 3DINO and BrainGFM pretrained weights from their respective
-authors and pass their locations explicitly. Optional local Bio_ClinicalBERT
-assets can be specified with `C2IMOE_CLINICALBERT_DIR`; if unavailable, the
-BrainGFM initializer uses fallback embeddings. Complete
-encoder checkpoints subsequently overwrite the corresponding stored parameters.
+### Pretrained weights
+
+Download the foundation-model checkpoints from the original authors:
+
+| Encoder | Official source | Checkpoint file |
+| --- | --- | --- |
+| 3DINO (T1 MRI) | [Hugging Face: AICONSlab/3DINO-ViT](https://huggingface.co/AICONSlab/3DINO-ViT) | `3dino_vit_weights.pth` |
+| BrainGFM (rs-fMRI) | [BrainGFM pretrained checkpoint](https://github.com/weixinxu666/BrainGFM/blob/main/checkpoint/BrainGFM_pretrained.pth) | `BrainGFM_pretrained.pth` |
+
+For example, save both checkpoints in a local `weights/` directory:
+
+```bash
+mkdir -p weights
+curl -L --fail \
+  "https://huggingface.co/AICONSlab/3DINO-ViT/resolve/main/3dino_vit_weights.pth?download=true" \
+  -o weights/3dino_vit_weights.pth
+curl -L --fail \
+  "https://raw.githubusercontent.com/weixinxu666/BrainGFM/main/checkpoint/BrainGFM_pretrained.pth" \
+  -o weights/BrainGFM_pretrained.pth
+```
+
+These are third-party pretrained weights and are not distributed with C2I-MoE.
+Please follow the original authors' access and licensing terms. Pass the local
+checkpoint paths using `--t1-pretrained` and `--fmri-pretrained`, as shown below.
+
+Optional local Bio_ClinicalBERT assets can be specified with
+`C2IMOE_CLINICALBERT_DIR`; if unavailable, the BrainGFM initializer uses fallback
+embeddings. Encoder checkpoints overwrite the corresponding stored parameters.
 
 ## Train
 
@@ -60,8 +80,8 @@ Start training with explicit paths:
 python train.py \
   --t1-root /path/to/T1 \
   --fmri-root /path/to/fMRI \
-  --t1-pretrained /path/to/3dino_vit_weights.pth \
-  --fmri-pretrained /path/to/graphmae_gmae.pth \
+  --t1-pretrained weights/3dino_vit_weights.pth \
+  --fmri-pretrained weights/BrainGFM_pretrained.pth \
   --output-dir outputs/private
 ```
 
